@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Page - Login</title>
+</head>
+<body>
+    <form action="">
+        <input placeholder="Email:" type="email"><br><br>
+        <input placeholder="Password:" type="password"><br><br>
+        <button>Submit</button>
+    </form>
+    <br>
+    <a href="/register">Register</a> - <a href="/contact">Contact</a>
+    <hr>
+    <script>
+        const inputs = document.querySelectorAll('input');
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            for ( const input of inputs ) if ( !input.value ) {
+                alert('Fill in all input fields');
+                return;
+            }
+
+            
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email: inputs[0].value, password: inputs[1].value})
+            });
+            const data = await response.json();
+            if ( data === false ) {
+                document.body.append(document.createElement('p').innerText = 'Password was incorrect!');
+                return;
+            }
+            console.log(data);
+            document.body.removeChild(document.body.childNodes[0]);
+            for (const d of data ) {
+                const content = document.createElement('p');
+                content.innerText = d.content;
+                const name = document.createElement('h2');
+                name.innerText = d.name;
+                document.body.append(name, content, document.createElement('br'))
+            }
+        })
+    </script>
+</body>
+</html>
